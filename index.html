@@ -3,23 +3,44 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-
 <title>Forever 💖</title>
 
 <link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.jpg">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <style>
 body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     background: black;
-    color: white;
     overflow: hidden;
+    color: white;
 }
 
-/* Background */
+/* ⭐ Star Background */
+#stars {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: black;
+    z-index: -4;
+}
+
+.star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: twinkle 2s infinite alternate;
+}
+
+@keyframes twinkle {
+    from { opacity: 0.3; }
+    to { opacity: 1; }
+}
+
+/* Background Slideshow */
 #bg {
     position: fixed;
     top: -5%;
@@ -28,8 +49,9 @@ body {
     height: 110%;
     background-size: cover;
     background-position: center;
-    transition: transform 0.3s ease, opacity 1s ease;
+    transition: opacity 1s ease, transform 8s ease;
     z-index: -3;
+    opacity: 0;
 }
 
 /* Vignette */
@@ -38,48 +60,34 @@ body {
     width: 100%;
     height: 100%;
     background: radial-gradient(circle,
-        rgba(0,0,0,0.25) 40%,
-        rgba(0,0,0,0.7) 100%);
+        rgba(0,0,0,0.2) 40%,
+        rgba(0,0,0,0.75) 100%);
     z-index: -2;
 }
 
-/* App Container */
-.app {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Glass Card */
-.card {
-    backdrop-filter: blur(20px);
-    background: rgba(255,255,255,0.08);
-    border-radius: 30px;
-    padding: 30px;
-    width: 90%;
-    max-width: 420px;
+/* Floating Content */
+#content {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    transform: translateY(-50%);
     text-align: center;
-    animation: heartbeat 3s infinite;
+    padding: 20px;
+    text-shadow: 0 0 20px rgba(0,0,0,0.9);
 }
 
-@keyframes heartbeat {
-    0%,100% { transform: scale(1); }
-    50% { transform: scale(1.02); }
-}
-
-/* Text */
 #letter {
-    white-space: pre-line;
+    max-width: 600px;
+    margin: auto;
+    font-size: 20px;
     line-height: 1.6;
-    margin-top: 15px;
-    text-shadow: 0 0 12px rgba(255,255,255,0.7);
+    white-space: pre-line;
 }
 
 /* Buttons */
 button {
-    padding: 14px 22px;
-    border-radius: 30px;
+    padding: 12px 20px;
+    border-radius: 25px;
     border: none;
     margin: 10px;
     font-size: 16px;
@@ -92,44 +100,109 @@ button {
 
 <body>
 
-<!-- AUDIO -->
 <audio id="music" loop playsinline src="Song.m4a"></audio>
 <audio id="successVoice" playsinline src="Success.m4a"></audio>
 <audio id="failVoice" playsinline src="Fail.m4a"></audio>
 
+<div id="stars"></div>
 <div id="bg"></div>
 <div id="vignette"></div>
 
-<div class="app">
-<div class="card" id="screen">
-
-<h3>🔐 Private Access</h3>
-<p>Password hint: You should ideally know 💕</p>
-<input type="password" id="pass" placeholder="DDMMYYYY">
-<br><br>
-<button onclick="unlock()">Unlock</button>
-<p id="error"></p>
-
-</div>
+<div id="content">
+    <h3>🔐 Private Access</h3>
+    <p>Password hint: You should ideally know 💕</p>
+    <input type="password" id="pass" placeholder="DDMMYYYY">
+    <br><br>
+    <button onclick="unlock()">Unlock</button>
+    <p id="error"></p>
 </div>
 
 <script>
-const password = "27042025";
-const images = ["photo1.jpeg","photo2.jpeg","photo3.jpeg","photo4.jpeg","photo5.jpeg","photo6.jpeg"];
-let imgIndex = 0;
 
-/* Proper element references */
+const password = "27042025"; // CHANGE IF NEEDED
+const images = ["photo1.jpeg","photo2.jpeg","photo3.jpeg","photo4.jpeg","photo5.jpeg","photo6.jpeg"];
+
 const bg = document.getElementById("bg");
-const passInput = document.getElementById("pass");
-const screenDiv = document.getElementById("screen");
 const music = document.getElementById("music");
 const successVoice = document.getElementById("successVoice");
 const failVoice = document.getElementById("failVoice");
 const errorText = document.getElementById("error");
 
-bg.style.backgroundImage = `url(${images[0]})`;
+let imgIndex = 0;
 
-/* Swipe Photos */
+/* ⭐ Generate Stars */
+const starsContainer = document.getElementById("stars");
+
+for(let i=0;i<120;i++){
+    let star = document.createElement("div");
+    star.className = "star";
+    star.style.width = star.style.height = Math.random()*3 + "px";
+    star.style.top = Math.random()*100 + "vh";
+    star.style.left = Math.random()*100 + "vw";
+    starsContainer.appendChild(star);
+}
+
+/* Unlock */
+function unlock(){
+    const entered = document.getElementById("pass").value;
+
+    if(entered === password){
+        successVoice.play().catch(()=>{});
+        startApp();
+    } else {
+        failVoice.play().catch(()=>{});
+        errorText.innerText = "Try again baby 😘";
+    }
+}
+
+/* Start Romantic Screen */
+function startApp(){
+
+    document.getElementById("stars").style.display = "none";
+
+    document.getElementById("content").innerHTML = `
+        <h2>For You 💖</h2>
+        <div id="letter"></div>
+        <div id="buttons"></div>
+    `;
+
+    startMusic();
+    startSlideshow();
+    typeWriter();
+}
+
+/* Music Fade */
+function startMusic(){
+    music.volume = 0;
+    music.play().catch(()=>{});
+    let fade = setInterval(()=>{
+        if(music.volume < 0.3) music.volume += 0.02;
+        else clearInterval(fade);
+    },200);
+}
+
+/* Slideshow */
+function startSlideshow(){
+
+    bg.style.backgroundImage = `url(${images[0]})`;
+    bg.style.opacity = 1;
+    bg.style.transform = "scale(1.05)";
+
+    setInterval(() => {
+
+        bg.style.opacity = 0;
+
+        setTimeout(() => {
+            imgIndex = (imgIndex + 1) % images.length;
+            bg.style.backgroundImage = `url(${images[imgIndex]})`;
+            bg.style.opacity = 1;
+            bg.style.transform = "scale(1.1)";
+        }, 800);
+
+    }, 6000);
+}
+
+/* Swipe Change */
 let startX = 0;
 document.addEventListener("touchstart", e => startX = e.touches[0].clientX);
 document.addEventListener("touchend", e => {
@@ -143,39 +216,11 @@ document.addEventListener("touchend", e => {
 /* Parallax */
 window.addEventListener("deviceorientation", e => {
     if(e.gamma && e.beta){
-        bg.style.transform = `translate(${e.gamma/2}px, ${e.beta/2}px)`;
+        bg.style.transform = `translate(${e.gamma/3}px, ${e.beta/3}px) scale(1.1)`;
     }
 });
 
-function unlock(){
-    if(passInput.value === password){
-        successVoice.play().catch(()=>{});
-        startApp();
-    } else {
-        failVoice.play().catch(()=>{});
-        errorText.innerText = "Try again baby 😘";
-    }
-}
-
-function startApp(){
-    screenDiv.innerHTML = `
-        <h2>For You 💖</h2>
-        <div id="letter"></div>
-        <div id="buttons"></div>
-    `;
-    startMusic();
-    typeWriter();
-}
-
-function startMusic(){
-    music.volume = 0;
-    music.play().catch(()=>{});
-    let fade = setInterval(()=>{
-        if(music.volume < 0.3) music.volume += 0.02;
-        else clearInterval(fade);
-    },200);
-}
-
+/* Typewriter */
 let text = `My Love,
 
 From the day we met,
@@ -193,23 +238,32 @@ function typeWriter(){
         letterDiv.innerHTML += text.charAt(i++);
         setTimeout(typeWriter,40);
     } else {
-        const buttonsDiv = document.getElementById("buttons");
-        buttonsDiv.innerHTML = `
-            <button class="yes" onclick="celebrate()">Yes 💖</button>
-            <button class="no" id="noBtn">No 🙈</button>
-        `;
-
-        const noBtn = document.getElementById("noBtn");
-        noBtn.addEventListener("touchstart", ()=>{
-            noBtn.style.top=Math.random()*70+"%";
-            noBtn.style.left=Math.random()*70+"%";
-        });
+        showButtons();
     }
 }
 
-function celebrate(){
-    screenDiv.innerHTML = "<h1>Forever & Always 💖</h1>";
+/* Buttons */
+function showButtons(){
+    const btnDiv = document.getElementById("buttons");
+
+    btnDiv.innerHTML = `
+        <button class="yes" onclick="celebrate()">Yes 💖</button>
+        <button class="no" id="noBtn">No 🙈</button>
+    `;
+
+    const noBtn = document.getElementById("noBtn");
+
+    noBtn.addEventListener("touchstart", ()=>{
+        noBtn.style.top = Math.random()*70+"%";
+        noBtn.style.left = Math.random()*70+"%";
+    });
 }
+
+function celebrate(){
+    document.getElementById("content").innerHTML =
+        "<h1>Forever & Always 💖</h1>";
+}
+
 </script>
 
 </body>
