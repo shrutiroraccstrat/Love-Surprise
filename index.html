@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>For My Forever 💖</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    background: black;
+    color: white;
+    overflow: hidden;
+}
+
+/* APP CONTAINER */
+.app {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Background */
+#bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    filter: blur(4px);
+    opacity: 0;
+    transition: opacity 2s ease, transform 10s ease;
+    z-index: -2;
+}
+
+#overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.75);
+    z-index: -1;
+}
+
+/* Stars */
+.star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: twinkle 2s infinite alternate;
+}
+
+@keyframes twinkle {
+    from { opacity: 0.3; }
+    to { opacity: 1; }
+}
+
+/* Buttons */
+button {
+    padding: 14px 22px;
+    border-radius: 30px;
+    border: none;
+    font-size: 16px;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.yes {
+    background: #ff4d88;
+    color: white;
+}
+
+.no {
+    background: white;
+    color: black;
+    position: absolute;
+}
+
+/* Letter */
+#letter {
+    max-width: 500px;
+    line-height: 1.6;
+    font-size: 18px;
+    white-space: pre-line;
+    text-shadow: 0 0 10px rgba(255,255,255,0.5);
+}
+</style>
+</head>
+
+<body>
+
+<audio id="music" loop playsinline>
+  <source src="Song.m4a" type="audio/mp4">
+</audio>
+
+<div id="bg"></div>
+<div id="overlay"></div>
+
+<div class="app" id="screen">
+
+<h2>🔐 Private Access</h2>
+<p>Password hint: The day we met 💕</p>
+<input type="password" id="pass" placeholder="DDMMYYYY">
+<button onclick="unlock()">Unlock</button>
+<p id="error" style="color:red;"></p>
+
+</div>
+
+<script>
+
+const correctPassword = "27042025"; // CHANGE
+
+function unlock() {
+    if(document.getElementById("pass").value === correctPassword) {
+        startApp();
+    } else {
+        document.getElementById("error").innerText = "Wrong password 😢";
+    }
+}
+
+function startApp() {
+
+    document.getElementById("screen").innerHTML = `
+        <h2>✨ For You, Under This Sky 🌙</h2>
+        <div id="letter"></div>
+        <div id="buttons" style="margin-top:30px;"></div>
+    `;
+
+    startMusic();
+    startBackground();
+    typeWriter();
+}
+
+function startMusic() {
+    let music = document.getElementById("music");
+    music.volume = 0;
+    music.play().catch(()=>{});
+    let fade = setInterval(()=>{
+        if(music.volume < 0.3) music.volume += 0.02;
+        else clearInterval(fade);
+    },200);
+}
+
+function startBackground() {
+    const images = ["photo1.jpeg","photo2.jpeg"];
+    let i = 0;
+    const bg = document.getElementById("bg");
+
+    function change() {
+        bg.style.backgroundImage = `url(${images[i]})`;
+        bg.style.opacity = 1;
+        bg.style.transform = "scale(1.1)";
+        i = (i+1)%images.length;
+    }
+
+    change();
+    setInterval(change,8000);
+}
+
+let text = `My Love,
+
+From the day we met, my world changed forever.
+
+You are my calm, my warmth,
+my favorite notification,
+my safest place.
+
+Under every sky,
+in every lifetime,
+I choose you. ❤️`;
+
+let index = 0;
+
+function typeWriter() {
+    if(index < text.length) {
+        document.getElementById("letter").innerHTML += text.charAt(index);
+        index++;
+        setTimeout(typeWriter,40);
+    } else {
+        showButtons();
+    }
+}
+
+function showButtons() {
+    document.getElementById("buttons").innerHTML = `
+        <button class="yes" onclick="celebrate()">Yes 💖</button>
+        <button class="no" id="noBtn">No 🙈</button>
+    `;
+
+    let noBtn = document.getElementById("noBtn");
+    noBtn.addEventListener("mouseover", moveButton);
+    noBtn.addEventListener("touchstart", moveButton);
+}
+
+function moveButton() {
+    let btn = document.getElementById("noBtn");
+    btn.style.top = Math.random()*70 + "%";
+    btn.style.left = Math.random()*70 + "%";
+}
+
+function celebrate() {
+    document.getElementById("screen").innerHTML = "<h1>Forever & Always 💖✨</h1>";
+    createFireworks();
+}
+
+function createFireworks() {
+    for(let i=0;i<80;i++){
+        let spark = document.createElement("div");
+        spark.style.position="absolute";
+        spark.style.width="5px";
+        spark.style.height="5px";
+        spark.style.background="pink";
+        spark.style.top="50%";
+        spark.style.left="50%";
+        spark.style.borderRadius="50%";
+        spark.style.transition="all 1s ease-out";
+
+        document.body.appendChild(spark);
+
+        setTimeout(()=>{
+            spark.style.top=Math.random()*100+"vh";
+            spark.style.left=Math.random()*100+"vw";
+            spark.style.opacity=0;
+        },10);
+
+        setTimeout(()=>spark.remove(),1000);
+    }
+}
+
+/* Stars */
+for(let i=0;i<100;i++){
+    let star=document.createElement("div");
+    star.className="star";
+    star.style.width=star.style.height=Math.random()*3+"px";
+    star.style.top=Math.random()*100+"vh";
+    star.style.left=Math.random()*100+"vw";
+    document.body.appendChild(star);
+}
+
+</script>
+
+</body>
+</html>
