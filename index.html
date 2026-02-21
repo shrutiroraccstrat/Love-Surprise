@@ -118,8 +118,15 @@ const password = "27042025";
 const images = ["photo1.jpeg","photo2.jpeg","photo3.jpeg","photo4.jpeg","photo5.jpeg","photo6.jpeg"];
 let imgIndex = 0;
 
-/* Background */
+/* Proper element references */
 const bg = document.getElementById("bg");
+const passInput = document.getElementById("pass");
+const screenDiv = document.getElementById("screen");
+const music = document.getElementById("music");
+const successVoice = document.getElementById("successVoice");
+const failVoice = document.getElementById("failVoice");
+const errorText = document.getElementById("error");
+
 bg.style.backgroundImage = `url(${images[0]})`;
 
 /* Swipe Photos */
@@ -135,21 +142,23 @@ document.addEventListener("touchend", e => {
 
 /* Parallax */
 window.addEventListener("deviceorientation", e => {
-    bg.style.transform = `translate(${e.gamma/2}px, ${e.beta/2}px)`;
+    if(e.gamma && e.beta){
+        bg.style.transform = `translate(${e.gamma/2}px, ${e.beta/2}px)`;
+    }
 });
 
 function unlock(){
-    if(pass.value === password){
-        document.getElementById("successVoice").play();
+    if(passInput.value === password){
+        successVoice.play().catch(()=>{});
         startApp();
     } else {
-        document.getElementById("failVoice").play();
-        document.getElementById("error").innerText = "Try again baby 😘";
+        failVoice.play().catch(()=>{});
+        errorText.innerText = "Try again baby 😘";
     }
 }
 
 function startApp(){
-    screen.innerHTML = `
+    screenDiv.innerHTML = `
         <h2>For You 💖</h2>
         <div id="letter"></div>
         <div id="buttons"></div>
@@ -160,7 +169,7 @@ function startApp(){
 
 function startMusic(){
     music.volume = 0;
-    music.play();
+    music.play().catch(()=>{});
     let fade = setInterval(()=>{
         if(music.volume < 0.3) music.volume += 0.02;
         else clearInterval(fade);
@@ -176,15 +185,21 @@ In every lifetime,
 I choose you. ❤️`;
 
 let i = 0;
+
 function typeWriter(){
+    const letterDiv = document.getElementById("letter");
+
     if(i < text.length){
-        letter.innerHTML += text.charAt(i++);
+        letterDiv.innerHTML += text.charAt(i++);
         setTimeout(typeWriter,40);
     } else {
-        buttons.innerHTML = `
+        const buttonsDiv = document.getElementById("buttons");
+        buttonsDiv.innerHTML = `
             <button class="yes" onclick="celebrate()">Yes 💖</button>
             <button class="no" id="noBtn">No 🙈</button>
         `;
+
+        const noBtn = document.getElementById("noBtn");
         noBtn.addEventListener("touchstart", ()=>{
             noBtn.style.top=Math.random()*70+"%";
             noBtn.style.left=Math.random()*70+"%";
@@ -193,7 +208,7 @@ function typeWriter(){
 }
 
 function celebrate(){
-    screen.innerHTML = "<h1>Forever & Always 💖</h1>";
+    screenDiv.innerHTML = "<h1>Forever & Always 💖</h1>";
 }
 </script>
 
