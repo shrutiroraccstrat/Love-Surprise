@@ -73,28 +73,38 @@ body {
     transform: translateY(-50%);
     text-align: center;
     padding: 20px;
-    text-shadow: 0 0 20px rgba(0,0,0,0.9);
+    text-shadow: 0 0 25px rgba(0,0,0,0.9);
 }
 
 #letter {
-    max-width: 600px;
+    max-width: 650px;
     margin: auto;
     font-size: 20px;
-    line-height: 1.6;
+    line-height: 1.7;
     white-space: pre-line;
 }
 
 /* Buttons */
 button {
-    padding: 12px 20px;
+    padding: 12px 24px;
     border-radius: 25px;
     border: none;
     margin: 10px;
     font-size: 16px;
 }
 
-.yes { background:#ff4d88; color:white; }
-.no { background:white; color:black; position:absolute; }
+.yes {
+    background:#ff4d88;
+    color:white;
+}
+
+.toggle-wrap {
+    margin-top: 20px;
+}
+
+input[type="checkbox"] {
+    transform: scale(1.4);
+}
 </style>
 </head>
 
@@ -119,7 +129,7 @@ button {
 
 <script>
 
-const password = "27042025"; // CHANGE IF NEEDED
+const password = "27042025";  // CHANGE IF NEEDED
 const images = ["photo1.jpeg","photo2.jpeg","photo3.jpeg","photo4.jpeg","photo5.jpeg","photo6.jpeg"];
 
 const bg = document.getElementById("bg");
@@ -197,37 +207,32 @@ function startSlideshow(){
             bg.style.backgroundImage = `url(${images[imgIndex]})`;
             bg.style.opacity = 1;
             bg.style.transform = "scale(1.1)";
-        }, 800);
+        }, 1000);
 
-    }, 6000);
+    }, 7000);
 }
 
-/* Swipe Change */
-let startX = 0;
-document.addEventListener("touchstart", e => startX = e.touches[0].clientX);
-document.addEventListener("touchend", e => {
-    let diff = e.changedTouches[0].clientX - startX;
-    if(Math.abs(diff) > 50){
-        imgIndex = (imgIndex + 1) % images.length;
-        bg.style.backgroundImage = `url(${images[imgIndex]})`;
-    }
-});
+/* Slow Typewriter */
+let text = `Hii Boo Boo,
+Meri Cutie Patootie,
+Mera shona,
+Meri jaanu
 
-/* Parallax */
-window.addEventListener("deviceorientation", e => {
-    if(e.gamma && e.beta){
-        bg.style.transform = `translate(${e.gamma/3}px, ${e.beta/3}px) scale(1.1)`;
-    }
-});
+I love you soo soo much.
+Ummm, I thought to use some of the technical skills
+and obvio GPT to make this small gesture.
 
-/* Typewriter */
-let text = `My Love,
+So, I wanted to let you know
+that you are doing so so well in life.
+I am very proud of you.
+Dont ever ever doubt yourself and I will always stand by you.
+Just wanted you to know this.
 
-From the day we met,
+And From the day we met,
 you became my safest place.
 
 In every lifetime,
-I choose you. ❤️`;
+I will choose you. ❤️`;
 
 let i = 0;
 
@@ -236,32 +241,44 @@ function typeWriter(){
 
     if(i < text.length){
         letterDiv.innerHTML += text.charAt(i++);
-        setTimeout(typeWriter,40);
+        setTimeout(typeWriter, 80);   // slower for readability
     } else {
-        showButtons();
+        showQuestion();
     }
 }
 
-/* Buttons */
-function showButtons(){
+/* After Letter */
+function showQuestion(){
     const btnDiv = document.getElementById("buttons");
 
     btnDiv.innerHTML = `
+        <p style="margin-top:30px; font-size:18px;">
+            Did you like it? 💕
+        </p>
+
         <button class="yes" onclick="celebrate()">Yes 💖</button>
-        <button class="no" id="noBtn">No 🙈</button>
+
+        <div class="toggle-wrap">
+            <label>No</label>
+            <input type="checkbox" id="noToggle">
+        </div>
     `;
 
-    const noBtn = document.getElementById("noBtn");
+    const toggle = document.getElementById("noToggle");
 
-    noBtn.addEventListener("touchstart", ()=>{
-        noBtn.style.top = Math.random()*70+"%";
-        noBtn.style.left = Math.random()*70+"%";
+    toggle.addEventListener("change", function(){
+        if(toggle.checked){
+            toggle.checked = false;
+            setTimeout(()=>{
+                alert("Hehe nice try 😌 You loved it.");
+            },200);
+        }
     });
 }
 
 function celebrate(){
     document.getElementById("content").innerHTML =
-        "<h1>Forever & Always 💖</h1>";
+        "<h1>That means everything to me 💖</h1>";
 }
 
 </script>
