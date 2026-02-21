@@ -1,0 +1,20 @@
+{
+  "name": "Forever With You 💖",
+  "short_name": "Forever 💕",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#ff4d88",
+  "icons": [
+    {
+      "src": "icon-192.jpg",
+      "sizes": "192x194",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "icon-512.jpg",
+      "sizes": "436x440",
+      "type": "image/jpeg"
+    }
+  ]
+}
